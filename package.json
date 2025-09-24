@@ -1,0 +1,6 @@
+{
+	"name": "fuel-app",
+	"scripts": {
+		"dev": "cd frontend && npm run dev"
+	}
+}
