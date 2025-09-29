@@ -11,18 +11,24 @@ const routes: Array<RouteRecordRaw> = [
 		path: '/',
 		component: TabsPage,
 		children: [
-		{
-			path: 'tab1',
-			component: () => import('@/views/Tab1Page.vue')
-		},
-		{
-			path: 'tab2',
-			component: () => import('@/views/Tab2Page.vue')
-		},
-		{
-			path: 'tab3',
-			component: () => import('@/views/Tab3Page.vue')
-		}
+			{
+				path: 'tab1',
+				name: 'Landing',
+				component: () => import('@/views/Tab1Page.vue')
+			},
+			{
+				path: 'tab2',
+				component: () => import('@/views/Tab2Page.vue')
+			},
+			{
+				path: 'tab3',
+				component: () => import('@/views/Tab3Page.vue')
+			},
+			{
+				path: 'login',
+				name: "Login",
+				component: () => import('@/views/LoginPage.vue')
+			}
 		]
 	}
 ]
