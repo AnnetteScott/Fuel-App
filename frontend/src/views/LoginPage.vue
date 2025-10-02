@@ -19,7 +19,6 @@ export default defineComponent({
 	},
 	methods: {
 		login() {
-			console.log(this.email)
 			Firebase.login(this.email, this.password)
 		}
 	},
@@ -30,8 +29,7 @@ export default defineComponent({
 <template>
 <ion-page>
 	<HeaderBar name="Login" />
-	<ion-content :fullscreen="true">
-
+	<ion-content class="ion-padding">
 		<ion-item>
 			<ion-input label="Email" placeholder="me@example.com" v-model="email"></ion-input>
 		</ion-item>

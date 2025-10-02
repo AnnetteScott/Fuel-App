@@ -43,7 +43,6 @@ export class Firebase {
     }
 
 	public static login(email: string, password: string) {
-		console.log(email)
 		signInWithEmailAndPassword(this.auth, email, password)
 		.catch((error) => {
 			const errorCode = error.code;

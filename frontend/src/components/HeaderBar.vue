@@ -10,10 +10,14 @@ defineProps({
 <template>
 	<ion-header>
 		<ion-toolbar>
-			<ion-title>{{ name }}</ion-title>
-			<ion-button v-if="Firebase.user.value" fill="clear" @click="Firebase.logOut()">
+			<ion-title slot="start">{{ name }}</ion-title>
+			<ion-button v-if="Firebase.user.value" fill="clear" @click="Firebase.logOut()"  slot="end">
 				<ion-icon slot="icon-only" :icon="exitOutline"></ion-icon>
 			</ion-button>
 		</ion-toolbar>
 	</ion-header>
 </template>
+
+<style>
+
+</style>
