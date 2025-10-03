@@ -12,42 +12,65 @@ setOptions({
 	v: "weekly",
 });
 
+let map = null as null | google.maps.Map
+
+const temp = [
+	{
+		location: {
+			lat: -36.90532,
+			lng: 174.92347,
+		},
+		price: "10"
+	},
+	{
+		location: {
+			lat: -36.90572,
+			lng: 174.93347,
+		},
+		price: "10"
+	}
+]
+
 export default defineComponent({
 	name: 'MapPage',
 	data() {
 		return {
-			map: null as google.maps.Map | null,
 		};
 	},
-	mounted() {
-		this.initMap()
+	async mounted() {
+		const mapEl = document.getElementById("map");
+		const location = { lat: -36.90532, lng: 174.92347 }
+		const { Map } = await importLibrary("maps");
+
+		if(!mapEl){
+			return;
+		}
+
+		map = new Map(mapEl, {
+			center: location,
+			zoom: 12,
+			mapId: 'DEMO_MAP_ID',
+		});
+		this.placeStations()
 	},
 	methods: {
-		async initMap() {
-			const mapEl = document.getElementById("map");
-			const location = { lat: -36.90532, lng: 174.92347 }
-
-			if(!mapEl){
-				return;
-			}
-			const { Map } = await importLibrary("maps");
+		async placeStations() {
 			const { PinElement, AdvancedMarkerElement } = await importLibrary("marker");
-			const map = new Map(mapEl, {
-				center: location,
-				zoom: 8,
-				mapId: 'DEMO_MAP_ID',
-			});
+			temp.forEach(s => {
+				const stationTag = document.createElement('div');
+				stationTag.className = 'station-tag';
+				stationTag.textContent = s.price;
+			
+				const marker = new AdvancedMarkerElement({
+					map,
+					position: s.location,
+					content: stationTag,
+				});
 
-
-			const priceTag = document.createElement('div');
-			priceTag.className = 'price-tag';
-			priceTag.textContent = '$2.5M';
-
-			const marker = new AdvancedMarkerElement({
-				map,
-				position: location,
-				content: priceTag,
-			});
+				marker.addListener('click', () => {
+					console.log("Click")
+				});
+			})
 		}
 	},
 })
@@ -68,7 +91,7 @@ export default defineComponent({
 	height: 100%;
 }
 
-.price-tag {
+.station-tag {
 	background-color: #4285F4;
 	border-radius: 8px;
 	color: #FFFFFF;
@@ -78,7 +101,7 @@ export default defineComponent({
 	transform: translateY(-8px);
 }
 
-.price-tag::after {
+.station-tag::after {
 	content: "";
 	position: absolute;
 	left: 50%;
