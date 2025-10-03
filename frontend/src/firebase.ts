@@ -24,10 +24,8 @@ export class Firebase {
 
 	private static authUnsubscribe = onAuthStateChanged(this.auth, (user) => {
 		this.user.value = user;
-		if (this.user.value) {
-		} else {
+		if (!this.user.value) {
 			router.push({name: 'Login'});
-			// User is signed out
 		}
 	});
 
@@ -43,6 +41,9 @@ export class Firebase {
 
 	public static login(email: string, password: string) {
 		signInWithEmailAndPassword(this.auth, email, password)
+		.then(() => {
+			router.push({name: 'Landing'});
+		})
 		.catch((error) => {
 			const errorCode = error.code;
 			const errorMessage = error.message;
