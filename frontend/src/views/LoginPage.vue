@@ -27,19 +27,19 @@ export default defineComponent({
 </script>
 
 <template>
-<ion-page>
-	<HeaderBar name="Login" />
-	<ion-content class="ion-padding">
-		<ion-item>
-			<ion-input label="Email" placeholder="me@example.com" v-model="email"></ion-input>
-		</ion-item>
+	<ion-page>
+		<HeaderBar name="Login" />
+		<ion-content class="ion-padding">
+			<ion-item>
+				<ion-input label="Email" placeholder="me@example.com" v-model="email"></ion-input>
+			</ion-item>
 
-		<ion-item>
-			<ion-input type="password" label="Password" v-model="password">
-				<ion-input-password-toggle slot="end"></ion-input-password-toggle>
-			</ion-input>
-		</ion-item>
-		<ion-button shape="round" @click="login()">Login</ion-button>
-	</ion-content>
-</ion-page>
+			<ion-item>
+				<ion-input type="password" label="Password" v-model="password">
+					<ion-input-password-toggle slot="end"></ion-input-password-toggle>
+				</ion-input>
+			</ion-item>
+			<ion-button shape="round" @click="login()">Login</ion-button>
+		</ion-content>
+	</ion-page>
 </template>
