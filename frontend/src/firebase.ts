@@ -25,7 +25,6 @@ export class Firebase {
 	private static authUnsubscribe = onAuthStateChanged(this.auth, (user) => {
 		this.user.value = user;
 		if (this.user.value) {
-			router.push({name: 'Landing'});
 		} else {
 			router.push({name: 'Login'});
 			// User is signed out
