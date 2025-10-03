@@ -5,7 +5,7 @@ import TabsPage from '../views/TabsPage.vue'
 const routes: Array<RouteRecordRaw> = [
 	{
 		path: '/',
-		redirect: '/home'
+		redirect: '/map'
 	},
 	{
 		path: '/',
@@ -17,11 +17,11 @@ const routes: Array<RouteRecordRaw> = [
 				component: () => import('@/views/HomePage.vue')
 			},
 			{
-				path: 'Map',
+				path: 'map',
 				component: () => import('@/views/MapPage.vue')
 			},
 			{
-				path: 'Profile',
+				path: 'profile',
 				component: () => import('@/views/ProfilePage.vue')
 			},
 		]
