@@ -14,8 +14,6 @@ const firebaseConfig = {
 };
 
 export class Firebase {
-	private static _instance: Firebase;
-
 	private static app = initializeApp(firebaseConfig);
 	private static db = getFirestore(this.app);
 	private static auth = getAuth(this.app);
@@ -28,16 +26,6 @@ export class Firebase {
 			router.push({name: 'Login'});
 		}
 	});
-
-	private constructor()
-    {
-        //...
-    }
-
-	public static get Instance()
-    {
-        return this._instance || (this._instance = new this());
-    }
 
 	public static login(email: string, password: string) {
 		signInWithEmailAndPassword(this.auth, email, password)
