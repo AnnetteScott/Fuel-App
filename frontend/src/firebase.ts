@@ -27,16 +27,21 @@ export class Firebase {
 		}
 	});
 
-	public static login(email: string, password: string) {
-		signInWithEmailAndPassword(this.auth, email, password)
-		.then(() => {
-			router.push({name: 'Landing'});
-		})
-		.catch((error) => {
-			const errorCode = error.code;
-			const errorMessage = error.message;
-			console.log(errorCode, errorMessage)
-		});
+	public static async login(email: string, password: string): Promise<boolean> {
+		if(!email || !password) {
+			return false;
+		}
+
+		try {
+			const result = await signInWithEmailAndPassword(this.auth, email, password);
+			if(result.user.email == this.user.value?.email){
+				router.push({name: 'Home'});
+				return true;
+			}
+		} catch (error) {
+			return false;
+		}
+		return false;
 	}
 
 	public static logOut() {

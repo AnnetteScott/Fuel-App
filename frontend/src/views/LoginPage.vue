@@ -10,16 +10,18 @@ export default defineComponent({
 	name: 'LoginPage',
 	data() {
 		return {
-			email: "",
-			password: ""
+			email: "dev@annette.page",
+			password: "develop",
+			hideError: true
 		};
 	},
 	mounted() {
 		
 	},
 	methods: {
-		login() {
-			Firebase.login(this.email, this.password)
+		async login() {
+			this.hideError = true;
+			this.hideError = await Firebase.login(this.email, this.password);
 		}
 	},
 })
@@ -30,6 +32,9 @@ export default defineComponent({
 	<ion-page>
 		<HeaderBar name="Login" />
 		<ion-content class="ion-padding">
+			<div class="login_error" v-if="!hideError">
+				Incorrect Email or Password.
+			</div>
 			<ion-item>
 				<ion-input label="Email" placeholder="me@example.com" v-model="email"></ion-input>
 			</ion-item>
@@ -43,3 +48,12 @@ export default defineComponent({
 		</ion-content>
 	</ion-page>
 </template>
+
+<style>
+.login_error {
+	background-color: #b80808;
+	color: white;
+	padding: 5px 15px;
+	border-radius: 5px;
+}
+</style>
