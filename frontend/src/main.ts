@@ -22,11 +22,11 @@ import '@ionic/vue/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import { Firebase } from './firebase';
+import { GoogleMap } from './MapManager';
+GoogleMap.getLocation();
 
 const app = createApp(App).use(IonicVue).use(router);
 
 router.isReady().then(() => {
-	Firebase.Instance;
 	app.mount('#app');
 });
