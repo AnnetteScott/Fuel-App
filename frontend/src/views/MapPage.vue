@@ -5,31 +5,8 @@ import HeaderBar from '@/components/HeaderBar.vue';
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { setOptions, importLibrary } from "@googlemaps/js-api-loader";
+import { GoogleMap } from '@/MapManager';
 
-setOptions({
-	key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-	v: "weekly",
-});
-
-let map = null as null | google.maps.Map
-
-const temp = [
-	{
-		location: {
-			lat: -36.90532,
-			lng: 174.92347,
-		},
-		price: "10"
-	},
-	{
-		location: {
-			lat: -36.90572,
-			lng: 174.93347,
-		},
-		price: "10"
-	}
-]
 
 export default defineComponent({
 	name: 'MapPage',
@@ -39,39 +16,10 @@ export default defineComponent({
 	},
 	async mounted() {
 		const mapEl = document.getElementById("map");
-		const location = { lat: -36.90532, lng: 174.92347 }
-		const { Map } = await importLibrary("maps");
-
-		if(!mapEl){
-			return;
-		}
-
-		map = new Map(mapEl, {
-			center: location,
-			zoom: 12,
-			mapId: 'DEMO_MAP_ID',
-		});
-		this.placeStations()
+		console.log(navigator.geolocation)
+		GoogleMap.initMap(mapEl);
 	},
 	methods: {
-		async placeStations() {
-			const { PinElement, AdvancedMarkerElement } = await importLibrary("marker");
-			temp.forEach(s => {
-				const stationTag = document.createElement('div');
-				stationTag.className = 'station-tag';
-				stationTag.textContent = s.price;
-			
-				const marker = new AdvancedMarkerElement({
-					map,
-					position: s.location,
-					content: stationTag,
-				});
-
-				marker.addListener('click', () => {
-					console.log("Click")
-				});
-			})
-		}
 	},
 })
 </script>
@@ -112,5 +60,14 @@ export default defineComponent({
 	border-left: 8px solid transparent;
 	border-right: 8px solid transparent;
 	border-top: 8px solid #4285F4;
+}
+
+.current_location {
+	background-color: #4285F4;
+    border-radius: 50px;
+    font-size: 14px;
+    padding: 8px;
+    position: relative;
+    border: 2px solid white;
 }
 </style>
