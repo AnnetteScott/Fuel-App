@@ -1,14 +1,28 @@
 import { setOptions, importLibrary } from "@googlemaps/js-api-loader";
+import { Firebase } from "./firebase";
+import { FuelOptimizer } from "./FuelOptimizer";
 
 export class GoogleMap {
 	public static map = null as null | google.maps.Map
 	public static location = { pos: { lat: -36.85152, lng: 174.76456 }, default: true }
+	public static destination = { pos: { lat: -36.87154, lng: 174.66625 } as google.maps.LatLngAltitudeLiteral}
+	public static directionsService: google.maps.DirectionsService | null = null;
+	public static directionsRenderer: google.maps.DirectionsRenderer | null = null;
 
 	public static getLocation() {
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(async (position: GeolocationPosition) => {
 				this.location.pos.lat = position.coords.latitude;
 				this.location.pos.lng = position.coords.longitude;
+				this.location.default = false;
+				
+				if(this.map) {
+					this.setLocationMarker()
+				}
+			}, 
+			() => { //Error
+				this.location.pos.lat = -36.88382;
+				this.location.pos.lng = 174.73803;
 				this.location.default = false;
 
 				if(this.map) {
@@ -35,6 +49,10 @@ export class GoogleMap {
 			zoomControl: true
 		});
 
+		const { DirectionsService, DirectionsRenderer } = (await importLibrary("routes")) as google.maps.RoutesLibrary;
+		this.directionsService = new DirectionsService();
+		this.directionsRenderer = new DirectionsRenderer({ map: this.map });
+
 		this.displayStations();
 
 		if(!this.location.default) {
@@ -57,49 +75,31 @@ export class GoogleMap {
 		});
 	}
 
-	private static getStations() {
-		return [
-			{
-				name: "Gull",
-				pos: {
-					lat: -36.87418,
-					lng: 174.67000
-				},
-				"91": 2.589,
-				"95": 2.689,
-				"98": 2.789,
-				"Diesel": 1.749
-			},
-			{
-				name: "Gull",
-				pos: {
-					lat: -36.87217,
-					lng: 174.66950
-				},
-				"91": 2.589,
-				"95": 2.689,
-				"98": 2.789,
-				"Diesel": 1.749
-			}
-		]
-	}
-
 	private static async displayStations() {
-		const { PinElement, AdvancedMarkerElement } = await importLibrary("marker");
-		const stations = this.getStations();
+		const { AdvancedMarkerElement } = await importLibrary("marker");
+		
+		const checkStations = () => {
+			const stations = Firebase.stations.value;
+			if (!stations || stations.length === 0) return;
 
-		stations.forEach(s => {
-			const priceTag = document.createElement('div');
-			priceTag.className = 'station-tag';
-			priceTag.textContent = s[91].toString();
+			stations.forEach((s: any) => {
+				const priceTag = document.createElement("div");
+				priceTag.className = "station-tag";
+				priceTag.textContent = s.fuel["91"].toString();
 
-			new AdvancedMarkerElement({
-				map: this.map,
-				position: s.pos,
-				content: priceTag,
-  			});
-		})
+				new AdvancedMarkerElement({
+					map: this.map!,
+					position: s.pos,
+					content: priceTag,
+				});
+			});
+		};
+
+		const interval = setInterval(() => {
+			if (Firebase.stations.value && Firebase.stations.value.length > 0) {
+				clearInterval(interval);
+				checkStations();
+			}
+		}, 500);
 	}
-
-	
 }

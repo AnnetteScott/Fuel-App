@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { IonPage, IonContent } from '@ionic/vue';
+import { IonPage, IonContent, IonSearchbar } from '@ionic/vue';
 import HeaderBar from '@/components/HeaderBar.vue';
 </script>
 
@@ -29,6 +29,7 @@ export default defineComponent({
 	<ion-page>
 		<HeaderBar name="Map" />
 		<ion-content>
+			<ion-searchbar></ion-searchbar>
 			<div id="map"></div>
 		</ion-content>
 	</ion-page>
