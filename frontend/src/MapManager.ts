@@ -102,4 +102,52 @@ export class GoogleMap {
 			}
 		}, 500);
 	}
+
+	public static async initComplete() {
+		if(!this.map) return;
+
+		let marker: google.maps.marker.AdvancedMarkerElement;
+		let infoWindow: google.maps.InfoWindow;
+
+		// Request needed libraries.
+		//@ts-ignore
+		const [{ Map }, { AdvancedMarkerElement }] = await Promise.all([
+			google.maps.importLibrary("marker"),
+			google.maps.importLibrary("places")
+		]);
+
+		
+		const placeAutocomplete = new google.maps.places.PlaceAutocompleteElement({});
+		placeAutocomplete.id = 'place-autocomplete-input';
+		placeAutocomplete.locationBias = this.location.pos;
+
+		const card = document.getElementById('place-autocomplete-card') as HTMLElement;
+		card.appendChild(placeAutocomplete);
+		this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(card);
+
+		// Create the marker and infowindow.
+		marker = new google.maps.marker.AdvancedMarkerElement({
+			map: this.map,
+		});
+
+		infoWindow = new google.maps.InfoWindow({});
+
+		// Add the gmp-placeselect listener, and display the results on the map.
+		//@ts-ignore
+		placeAutocomplete.addEventListener('gmp-select', async ({ placePrediction }) => {
+			const place = placePrediction.toPlace();
+			await place.fetchFields({ fields: ['displayName', 'formattedAddress', 'location'] });
+
+			if(!this.map) return;
+
+			// If the place has a geometry, then present it on a map.
+			if (place.viewport) {
+				this.map.fitBounds(place.viewport);
+			} else {
+				this.map.setCenter(place.location);
+			}
+
+			marker.position = place.location;
+		});
+	}
 }

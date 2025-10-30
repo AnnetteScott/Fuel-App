@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { IonPage, IonContent, IonSearchbar } from '@ionic/vue';
+import { IonPage, IonContent } from '@ionic/vue';
 import HeaderBar from '@/components/HeaderBar.vue';
 </script>
 
@@ -12,12 +12,14 @@ export default defineComponent({
 	name: 'MapPage',
 	data() {
 		return {
+			search: ""
 		};
 	},
 	async mounted() {
 		const mapEl = document.getElementById("map");
 		console.log(navigator.geolocation)
-		GoogleMap.initMap(mapEl);
+		await GoogleMap.initMap(mapEl);
+		await GoogleMap.initComplete();
 	},
 	methods: {
 	},
@@ -29,7 +31,9 @@ export default defineComponent({
 	<ion-page>
 		<HeaderBar name="Map" />
 		<ion-content>
-			<ion-searchbar></ion-searchbar>
+			<div class="place-autocomplete-card" id="place-autocomplete-card">
+				<p>Search for a place here:</p>
+			</div>
 			<div id="map"></div>
 		</ion-content>
 	</ion-page>
@@ -37,7 +41,23 @@ export default defineComponent({
 
 <style>
 #map {
-	height: 100%;
+	height: calc(100%);
+}
+
+#place-autocomplete-card {
+	background-color: #fff;
+	border-radius: 5px;
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+	margin: 10px;
+	padding: 5px;
+}
+
+gmp-place-autocomplete {
+  width: 300px;
+}
+
+p {
+	margin: 0;
 }
 
 .station-tag {
