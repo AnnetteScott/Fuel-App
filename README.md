@@ -5,7 +5,7 @@ This project integrates with **Firebase** and **Google Maps API** for real-time 
 
 ## Prerequisites
 
-Make sure you have **Node.js (v18+)**, **npm or yarn**, and the **Ionic CLI** installed globally:
+Make sure you have **Node.js (v11+)**, **npm or yarn**, and the **Ionic CLI** installed globally:
 
 ```bash
 npm install -g @ionic/cli
