@@ -4,6 +4,7 @@ import { getAuth, onAuthStateChanged, User, signInWithEmailAndPassword   } from 
 import { Ref, ref } from "vue";
 import router from '@/router'
 import { StationData, VehicleData } from "./types";
+import { GoogleMap } from "./MapManager";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyATTTBVQxVGV7VXr4j0DexThQmzchuUlCM",
@@ -66,13 +67,15 @@ export class Firebase {
 			this.stations.value = data.stations;
 		}
 
-		const userRef = doc(this.db, "data", this.user.value.uid);
-		const docSnap = await getDoc(userRef);
-		if (docSnap.exists()) {
-			const data = docSnap.data() as VehicleData;
+		onSnapshot(doc(this.db, "data", `${this.user.value.uid}`), (doc) => {
+			const data = doc.data() as VehicleData;
 			this.userData.value = data;
-			
-		}
+			console.log(this.userData.value);
+
+			if(GoogleMap.destination.pos.lat !== 0){
+				GoogleMap.displayRoute();
+			}
+		});
 
 		console.log(this.stations.value, this.userData.value)
 

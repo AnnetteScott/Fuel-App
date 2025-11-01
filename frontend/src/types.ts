@@ -20,4 +20,5 @@ export interface RouteEvaluation {
 	routeKm: number;
 	fuelNeededL: number;
 	fuelCost: number;
+	request: google.maps.DirectionsResult
 }

@@ -12,7 +12,6 @@ export default defineComponent({
 	name: 'MapPage',
 	data() {
 		return {
-			search: ""
 		};
 	},
 	async mounted() {

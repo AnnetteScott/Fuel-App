@@ -4,7 +4,7 @@ import { RouteEvaluation } from "./types";
 
 
 export class FuelOptimizer {
-	public async evaluateStations(destination: google.maps.LatLngAltitudeLiteral){
+	public async evaluateStations(destination: {lat: number, lng: number}){
 		if(!GoogleMap.directionsService){
 			return;
 		}
@@ -17,11 +17,8 @@ export class FuelOptimizer {
 			travelMode: google.maps.TravelMode.DRIVING
 		});
 
-		const baseDistanceKm = (baseRoute.routes[0].legs[0].distance?.value ?? 0) / 1000;
-		console.log(baseDistanceKm);
-
 		const vehicle = Firebase.userData.value;
-		const vehicleRange = vehicle.currentFuel * vehicle.tankCapacity;
+		const vehicleRange = vehicle.currentFuel * vehicle.fuelEfficiency;
 
 		for(const station of Firebase.stations.value) {
 			const stationRoute = await GoogleMap.directionsService!.route({
@@ -32,24 +29,31 @@ export class FuelOptimizer {
 				travelMode: google.maps.TravelMode.DRIVING,
 			});
 
+			const toStation = (stationRoute.routes[0].legs[0].distance?.value ?? 0) / 1000;
+			if(toStation > vehicleRange){
+				continue;
+			}
+			
 			let routeKm = 0;
 			for(const leg of stationRoute.routes[0].legs){
 				routeKm += (leg.distance?.value ?? 0) / 1000;
 			}
-			console.log("km", routeKm);
 
 			const fuelNeededL = parseFloat((routeKm / vehicle.fuelEfficiency).toFixed(2));
 			const fuelCost = parseFloat((fuelNeededL * station.fuel[91]).toFixed(2));
-			console.log(fuelNeededL, fuelCost)
 
 			results.push({
 				station,
 				routeKm,
 				fuelNeededL,
 				fuelCost,
+				request: stationRoute
 			});
 		}
 
-		console.log(results)
+		const pick = results.sort((a, b) => a.fuelCost < b.fuelCost ? -1 : 1)
+		GoogleMap.directionsRenderer?.setDirections(pick[0].request);
+
+		return pick[0];
 	}
 }

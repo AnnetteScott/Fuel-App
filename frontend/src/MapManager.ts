@@ -5,7 +5,7 @@ import { FuelOptimizer } from "./FuelOptimizer";
 export class GoogleMap {
 	public static map = null as null | google.maps.Map
 	public static location = { pos: { lat: -36.85152, lng: 174.76456 }, default: true }
-	public static destination = { pos: { lat: -36.87154, lng: 174.66625 } as google.maps.LatLngAltitudeLiteral}
+	public static destination = { pos: { lat: 0, lng: 0 }}
 	public static directionsService: google.maps.DirectionsService | null = null;
 	public static directionsRenderer: google.maps.DirectionsRenderer | null = null;
 
@@ -61,7 +61,7 @@ export class GoogleMap {
 	}
 
 	private static async setLocationMarker() {
-		const { PinElement, AdvancedMarkerElement } = await importLibrary("marker");
+		const { AdvancedMarkerElement } = await importLibrary("marker");
 		this.map?.setCenter(this.location.pos)
 		this.map?.setZoom(13)
 
@@ -107,7 +107,6 @@ export class GoogleMap {
 		if(!this.map) return;
 
 		let marker: google.maps.marker.AdvancedMarkerElement;
-		let infoWindow: google.maps.InfoWindow;
 
 		// Request needed libraries.
 		//@ts-ignore
@@ -130,8 +129,6 @@ export class GoogleMap {
 			map: this.map,
 		});
 
-		infoWindow = new google.maps.InfoWindow({});
-
 		// Add the gmp-placeselect listener, and display the results on the map.
 		//@ts-ignore
 		placeAutocomplete.addEventListener('gmp-select', async ({ placePrediction }) => {
@@ -148,6 +145,19 @@ export class GoogleMap {
 			}
 
 			marker.position = place.location;
+			//@ts-ignore
+			this.destination.pos.lat = marker.position.lat;
+			//@ts-ignore
+			this.destination.pos.lng = marker.position.lng;
+			console.log(this.destination)
+			this.displayRoute();
+			
 		});
+	}
+
+	public static async displayRoute(){
+		const opt = new FuelOptimizer();
+		const pick = await opt.evaluateStations(this.destination.pos);
+		console.log(pick)
 	}
 }
